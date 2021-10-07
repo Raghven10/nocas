@@ -1,0 +1,46 @@
+{% extends "base_template.html" %}
+{% block page_content %}
+<h1 align="center">{{ airport.name }}</h1>
+{% load crispy_forms_tags %}
+<table class="table table-borderless">
+    <tr>
+        <th>Airport Code</th>
+        <th>IATA Code</th>
+        <th>Elevation(ft)</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Action</th>
+    </tr>
+
+     <tr>
+        <td>{{airport.ident}}</td>
+        <td>{{airport.iata_code}}</td>
+        <td>{{airport.elevation_ft}}</td>
+         <td>{{airport.latitude_deg}}</td>
+         <td>{{airport.longitude_deg}}</td>
+         <td> <a href="{%url 'edit_airport' airport.id %}" class="btn btn-outline-success"><i class="fa fa-eye fa-lg"></i></a> </td>
+    </tr>
+    <tr>
+        <th>Obstruction Details</th>
+        <form method="post" class="form-class" action="">
+        {% csrf_token %}
+            <td>{{ form.height|as_crispy_field}}</td>
+            <td>{{ form.site_elevation|as_crispy_field}}</td>
+            <td>{{ form.latitude|as_crispy_field}}</td>
+            <td>{{ form.longitude|as_crispy_field}}</td>
+            <td>
+                <a href="#" class="btn btn-outline-danger">
+                    <button type="submit" value="submit" class="btn">
+                        <i class="fa fa-broadcast-tower fa-lg"></i>
+                    </button>
+                </a>
+            </td>
+        </form>
+    </tr>
+</table>
+
+<div class="map">
+    {{ my_map|safe }}
+</div>
+
+{% endblock %}

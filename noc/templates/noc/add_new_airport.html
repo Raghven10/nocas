@@ -1,0 +1,55 @@
+{% extends "base_template.html" %}
+{% block page_content %}
+
+<div class="jumbotron">
+
+  <h1 class="display-4"> Add New Airport</h1>
+  <p class="lead">Please provide information true to your knowledge.
+      However, airport will be added only after verification of data provided.</p>
+  <hr class="my-4">
+    {% load crispy_forms_tags %}
+    <form method="post" class="form-class" action="">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4">
+                {{ form.name|as_crispy_field}}
+                {{ form.ident|as_crispy_field}}
+                {{ form.type|as_crispy_field}}
+                {{ form.latitude_deg|as_crispy_field}}
+                {{ form.longitude_deg|as_crispy_field}}
+                {{ form.elevation_ft|as_crispy_field}}
+                {{ form.gps_code|as_crispy_field}}
+            </div>
+            <div class="col-md-4">
+                {{ form.iata_code|as_crispy_field}}
+                {{ form.continent|as_crispy_field}}
+                {{ form.country_name|as_crispy_field}}
+                {{ form.iso_country|as_crispy_field}}
+                {{ form.region_name|as_crispy_field}}
+                {{ form.iso_region|as_crispy_field}}
+                {{ form.local_region|as_crispy_field}}
+            </div>
+            <div class="col-md-4">
+                {{ form.municipality|as_crispy_field}}
+                {{ form.local_code|as_crispy_field}}
+                {{ form.home_link|as_crispy_field}}
+                {{ form.wikipedia_link|as_crispy_field}}
+                {{ form.keywords|as_crispy_field}}
+                {{ form.score|as_crispy_field}}
+                {{ form.pub_date|as_crispy_field}}
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {{ form.scheduled_service|as_crispy_field}}
+            </div>
+            <div class="col-md-8">
+                <button type="submit" class="save btn btn-block btn-lg btn-success">Save</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}
