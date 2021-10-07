@@ -25,3 +25,8 @@ urlpatterns = [
     path('noc/', include('noc.urls')),
     path('admin/', admin.site.urls),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+admin.site.site_header  =  "NOCAS Administration"
+admin.site.site_title  =  "NOCAS admin site"
+admin.site.index_title  =  "NOCAS Admin"
