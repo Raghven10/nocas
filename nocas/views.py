@@ -8,7 +8,7 @@ import csv
 from django.template import loader
 
 def index(request):
-    return render(request, 'noc/template.html')
+    return render(request, 'noc/index.html')
 
 
 
