@@ -1,0 +1,31 @@
+{% extends "base_template.html" %}
+{% block page_content %}
+<h1 align="center">Plot an area</h1>
+{% load crispy_forms_tags %}
+<table class="table table-borderless">
+    <th></th>
+    <form method="post" class="form-class" action="">
+       {% csrf_token %}
+    <tr>  
+        <td>{{ form.name|as_crispy_field}}</td>
+        <td>{{ form.airport|as_crispy_field}}</td>
+       
+    </tr>                
+       
+    <tr>  
+       <td>{{ form.color|as_crispy_field}}</td>
+       <td>{{ form.fill_color|as_crispy_field}}</td>  
+      <td>   
+      <button type="submit" value="submit" class="btn btn-block btn-success">
+          Start
+      </button> 
+    </td>        
+    </tr>
+    </form>
+</table>
+
+<div class="map">
+    {{ my_map|safe }}
+</div>
+
+{% endblock %}

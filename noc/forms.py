@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Airport, Obstruction
+from .models import Airport, Obstruction, Area, Point
 
 
 class AddNewAirport(ModelForm):
@@ -14,4 +14,13 @@ class MarkObstruction(ModelForm):
     model = Obstruction
     fields = '__all__'
 
+class MarkAreaForm(ModelForm):
+   class Meta:
+    model = Area
+    fields = '__all__'
 
+
+class PointForm(ModelForm):
+   class Meta:
+    model = Point
+    fields = '__all__'

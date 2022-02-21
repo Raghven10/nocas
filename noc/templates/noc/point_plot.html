@@ -1,0 +1,53 @@
+{% extends "base_template.html" %}
+{% block page_content %}
+<h1 align="center">Draw an Area </h1>
+{% load crispy_forms_tags %}
+<table class="table table-borderless">
+    
+    <form method="post" class="form-class" action="">
+       {% csrf_token %}
+
+    <tr>  
+        <th>Area Name: {{ area.name}}</th>
+        <td>Line Color: {{ area.color}}</td>
+        <td>Fill Color: {{ area.fill_color}}</td>
+    </tr>
+    {% for point in points %}
+    <tr>  
+        <th>Point: {{ point.point_name}}</th>
+        <td>Latitude: {{ point.latitude}}</td>
+        <td>Longitude: {{ point.longitude}}</td>
+        <td>
+          <a class="btn btn-sm btn-icon-only text-danger" href="{% url 'delete_point' point.id %}" role="button"
+                        aria-expanded="false">
+            <i class="fas fa-minus"></i>
+          </a>   
+        </td>    
+    </tr>
+    {%endfor%}
+    <tr>  
+        <td>{{ form.point_name|as_crispy_field}}</td>
+        <td>{{ form.latitude|as_crispy_field}}</td>
+        <td>{{ form.longitude|as_crispy_field}}</td>
+        <td>
+          <a href="#" class="btn btn-outline-success">
+            <button type="submit" value="submit" class="btn btn-sm">
+                <i class="fa fa-plus"> </i>
+            </button>
+          </a>
+        </td>     
+        <input type="text" hidden value="{{ area.id }}" name="area"/>
+    </tr>
+    <tr id="cordinate_row"> 
+                 
+           
+    </tr>
+    
+    </form>
+</table>
+
+<div class="map">
+   {{ map|safe }} 
+</div>
+
+{% endblock %}

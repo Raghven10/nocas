@@ -22,6 +22,12 @@ urlpatterns = [
                   # ex: /plot_route/
                   path('plot_route/', views.plot_route, name='plot_route'),
 
+                  # ex: /area_plot/
+                  path('area_plot/', views.area_plot, name='area_plot'),
+
+                  # ex: /point_plot/
+                  path('point_plot/<int:id>', views.point_plot, name='point_plot'),
+
                   # ex: /airport_list
                   path('airport_list/', views.airport_list, name='airport_list'),
 
@@ -30,6 +36,18 @@ urlpatterns = [
 
                     # ex: /delete/5/
                   path('delete/<int:id>/', views.delete_airport, name='delete_airport'),
+
+                  # ex: /airport_list
+                  path('area_list/', views.area_list, name='area_list'),
+
+                    # ex: /delete_area/5/
+                  path('delete_area/<int:id>/', views.delete_area, name='delete_area'),
+
+                   # ex: /edit_area/5/
+                  path('edit_area/<int:id>/', views.edit_area, name='edit_area'),
+
+                    # ex: /delete_point/5/
+                  path('delete_point/<int:point_id>/', views.delete_point, name='delete_point'),
 
 
 
