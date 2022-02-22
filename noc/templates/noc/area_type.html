@@ -1,0 +1,39 @@
+{% extends "base_template.html" %}
+{% block page_content %}
+<h1 align="center">AREA TYPES</h1>
+{% load crispy_forms_tags %}
+<table class="table table-borderless">
+    <tr>
+        <th>Sl No</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+    {% for t in  areaTypes %}
+      <tr>
+        <th>{{t.id}}</th>
+        <th>{{t.name}}</th>
+        <td class="text-justify">{{t.description}}</td>
+        <td>
+            {% comment %} <a href="{%url 'edit_area_type' t.id %}" class="btn-outline-primary"><i class="fa fa-edit"></i></a> {% endcomment %}
+            <a href="{%url 'delete_area_type' t.id %}" class="btn-outline-danger"><i class="fa fa-trash"></i></a>
+        </td>
+      </tr>
+    {% endfor %}
+    <form method="post" class="form-class" action="">
+       {% csrf_token %}
+    <tr>  
+        <th>Sl No</th>
+        <td>{{ form.name|as_crispy_field}}</td>
+        <td>{{ form.description|as_crispy_field}}</td>
+        <td><button type="submit" value="submit" class="btn btn-block btn-success">
+                Add
+            </button> 
+        </td>
+       
+    </tr>                
+       
+    </form>
+</table>
+
+{% endblock %}

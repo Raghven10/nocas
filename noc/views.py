@@ -13,8 +13,8 @@ from noc.my_map import draw_area, show_map
 
 from .angle import find_angle
 from .arrows import getArrows
-from .forms import AddNewAirport, MarkAreaForm, MarkObstruction, PointForm
-from .models import Airport, Area, Point
+from .forms import AddNewAirport, MarkAreaForm, MarkObstruction, PointForm, AreaTypeForm
+from .models import Airport, Area, AreaType, Point
 from .distance import find_distance
 
 
@@ -182,6 +182,7 @@ def plot_route(request) :
 def area_plot(request) :
     if request.method == 'GET':
         form = MarkAreaForm()
+        areaTypes = AreaType.objects.all()
         try:
 
             airport_location = [28.5665, 77.103104] # IGI Airport Delhi location
@@ -213,7 +214,8 @@ def area_plot(request) :
             m = map._repr_html_()
             context: dict = {
                 'my_map': m,                
-                'form':form
+                'form':form,
+                'areaTypes':areaTypes
             }
         except Airport.DoesNotExist:
             raise Http404("Airport does not exist")
@@ -236,13 +238,23 @@ def point_plot(request, id):
         for p in points:
             coordinate = (p.latitude, p.longitude)
             location.append(coordinate)
-        print(location)      
-           
-        print(len(location))
+
+            
+            
+       
         if len(location)!=0:
             map_location = location[0] # First Point
             show_map(map_location)   
             my_map = draw_area(location, area.color, area.fill_color, area.name) 
+            for p in points:
+                div = folium.DivIcon(html=(
+                        '<svg height="100" width="200">'                        
+                        '<text x="10" y="10" fill="black">%s</text>'
+                        '</svg>'% ([p.point_name,  p.latitude,    p.longitude])
+                        ))
+
+                folium.Marker([p.latitude, p.longitude],icon=div).add_to(my_map)
+
             m = my_map._repr_html_()        
         else:
             map_location = [28.5665, 77.103104]
@@ -267,6 +279,7 @@ def point_plot(request, id):
                'area':area,
                'form':form
            }
+           return redirect('point_plot', id=area.id)
     return render(request,'noc/point_plot.html', context)
 
 def mark_obstruction(request):
@@ -297,7 +310,35 @@ def delete_area(request, id):
     area.delete()
     return redirect('area_list')
 
+def delete_area_type(request, id):
+    areaType = AreaType.objects.get(pk=id)    
+    areaType.delete()
+    return redirect('area_type')
+
 def edit_area(request, id):
     if request.method == "GET":
         point = Point.objects.filter(pk=id)
     return redirect('point_plot', id=id)
+
+def area_type(request):
+    if request.method == "GET":
+        areaTypes = AreaType.objects.all()
+        form = AreaTypeForm()
+
+        context:dict = {
+            'form':form,
+            'areaTypes':areaTypes
+        }
+    else:       
+        form = AreaTypeForm(request.POST)
+        if form.is_valid:
+            form.save()  
+        areaTypes = AreaType.objects.all()
+        form = AreaTypeForm()
+        context:dict = {
+            'form':form,
+            'areaTypes':areaTypes
+        }
+
+
+    return render(request, 'noc/area_type.html', context)

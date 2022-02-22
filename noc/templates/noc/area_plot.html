@@ -9,12 +9,14 @@
     <tr>  
         <td>{{ form.name|as_crispy_field}}</td>
         <td>{{ form.airport|as_crispy_field}}</td>
+        <td>{{ form.area_type|as_crispy_field}}</td>  
        
     </tr>                
        
     <tr>  
        <td>{{ form.color|as_crispy_field}}</td>
-       <td>{{ form.fill_color|as_crispy_field}}</td>  
+       <td>{{ form.fill_color|as_crispy_field}}</td> 
+       <td>{{ form.reference|as_crispy_field}}</td>  
       <td>   
       <button type="submit" value="submit" class="btn btn-block btn-success">
           Start

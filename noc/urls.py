@@ -40,8 +40,15 @@ urlpatterns = [
                   # ex: /airport_list
                   path('area_list/', views.area_list, name='area_list'),
 
+                  # ex: /area_type
+                  path('area_type/', views.area_type, name='area_type'),
+
                     # ex: /delete_area/5/
                   path('delete_area/<int:id>/', views.delete_area, name='delete_area'),
+
+
+                    # ex: /delete_area_type/5/
+                  path('delete_area_type/<int:id>/', views.delete_area_type, name='delete_area_type'),
 
                    # ex: /edit_area/5/
                   path('edit_area/<int:id>/', views.edit_area, name='edit_area'),

@@ -25,23 +25,40 @@ class Airport(models.Model):
     score = models.IntegerField(("score"), default=0)
     pub_date = models.DateTimeField(default=django.utils.timezone.now())
 
+    def __str__(self):
+        return self.name
+
 class Obstruction(models.Model):
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
     height = models.FloatField(default=0.0)
     site_elevation = models.FloatField(default=0.0)
 
+class AreaType(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=2000)
+
+    def __str__(self):
+        return self.name
+    
 class Area(models.Model):
     name = models.CharField(max_length=200)
     color = models.CharField(max_length=50, default='black')
     fill_color = models.CharField(max_length=50, default='orange')  
     airport = models.ForeignKey(Airport, on_delete=models.CASCADE)
+    area_type = models.ForeignKey(AreaType, on_delete=models.CASCADE)
+    reference = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.name
 
 class Point(models.Model):
     point_name = models.CharField(max_length=200)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.point_name
     
 
