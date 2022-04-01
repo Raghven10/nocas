@@ -1,0 +1,39 @@
+{% extends "base_template.html" %}
+{% block page_content %}
+<h1 align="center">NEW ROUTE</h1>
+{% load crispy_forms_tags %}
+<table class="table table-borderless">
+    <th></th>
+    <form method="post" class="form-class" action="">
+       {% csrf_token %}
+    <tr>  
+        <td>{{ form.name|as_crispy_field}}</td>
+        <td>{{ form.route_type|as_crispy_field}}</td>
+        <td> {{ form.reference|as_crispy_field}}  </td> 
+        <td>{{ form.color|as_crispy_field}}</td>  
+       
+    </tr>                
+       
+    <tr>  
+       <td>{{ form.upper_limit|as_crispy_field}}</td>
+       <td>{{ form.lower_limit|as_crispy_field}}</td> 
+       <td>{{ form.lateral_limit|as_crispy_field}}</td>  
+      <td> {{ form.mfa|as_crispy_field}}  </td>        
+    </tr>
+    <tr>  
+       <td>{{ form.description|as_crispy_field}}</td>      
+       <td>
+            <button type="submit" value="submit" class="btn btn-block btn-success">
+                Start
+            </button> 
+        </td>             
+    </tr>
+     
+    </form>
+</table>
+
+{% comment %} <div class="map">
+    {{ my_map|safe }}
+</div> {% endcomment %}
+
+{% endblock %}

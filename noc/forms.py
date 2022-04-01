@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Airport, AreaType, Obstruction, Area, Point
+from .models import Airport, AreaType, AtsRoute, Obstruction, Area, Point, RouteType, Waypoint
 
 
 class AddNewAirport(ModelForm):
@@ -28,4 +28,19 @@ class PointForm(ModelForm):
 class AreaTypeForm(ModelForm):
    class Meta:
     model = AreaType
+    fields = '__all__'
+
+class RouteTypeForm(ModelForm):
+   class Meta:
+    model = RouteType
+    fields = '__all__'
+
+class RouteForm(ModelForm):
+   class Meta:
+    model = AtsRoute
+    fields = '__all__'
+
+class WayPointForm(ModelForm):
+   class Meta:
+    model = Waypoint
     fields = '__all__'

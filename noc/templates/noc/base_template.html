@@ -20,14 +20,17 @@
         <nav class="nav">
             <div> <a href="#" class="nav_logo"> <i class='bx bx-layer nav_logo-icon'></i> <span class="nav_logo-name">AIMS</span> </a>
                 <div class="nav_list">
+                    {% comment %} <a href="{% url 'print_file' %}" class="nav_link"> <i class='bx bx-printer nav_icon'></i> <span class="nav_name">Print File</span> </a> {% endcomment %}
                     <a href="{% url 'airports' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">Dashboard</span> </a>
                     <a href="{% url 'area_type' %}" class="nav_link"> <i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">Area Types</span> </a>
                     <a href="{% url 'add_airport' %}" class="nav_link"> <i class='bx bx-add-to-queue nav_icon'></i> <span class="nav_name">Add New Airport</span> </a>
-                    <a href="{% url 'plot_route' %}" class="nav_link"> <i class='bx bx-paper-plane nav_icon'></i> <span class="nav_name">Route Plotting</span> </a>
+                    <a href="{% url 'route_type' %}" class="nav_link"> <i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">Route Types</span> </a>
+                    <a href="{% url 'route_plot' %}" class="nav_link"> <i class='bx bx-paper-plane nav_icon'></i> <span class="nav_name">Route Plotting</span> </a>
                     <a href="{% url 'area_plot' %}" class="nav_link"> <i class='bx bx-diamond nav_icon'></i> <span class="nav_name">Area Plotting</span> </a>
                     <a href="{% url 'airports' %}" class="nav_link"> <i class='bx bx-paper-plane nav_icon'></i> <span class="nav_name">Airport Directory</span> </a>
-                     <a href="{% url 'area_list' %}" class="nav_link"> <i class='bx bx-shape-square nav_icon'></i> <span class="nav_name">Marked Areas</span> </a>
+                    <a href="{% url 'area_list' %}" class="nav_link"> <i class='bx bx-shape-square nav_icon'></i> <span class="nav_name">Marked Areas</span> </a>
                     <a href="{% url 'mark_obstruction' %}" class="nav_link"> <i class='bx bx-map-pin nav_icon'></i> <span class="nav_name">Mark Obstructions</span> </a>
+                    
                 </div>
             </div>
         </nav>

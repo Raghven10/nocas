@@ -1,0 +1,49 @@
+{% extends "base_template.html" %}
+{% block page_content %}
+<h1 align="center">Plot Route </h1>
+{% load crispy_forms_tags %}
+<table class="table table-borderless">
+    
+    <form method="post" class="form-class" action="">
+       {% csrf_token %}
+
+    <tr>  
+        <th>Route Name: {{ ats_route.name}}</th>
+        <td>Upper Limit - Lower Limit / MSA : FL{{ ats_route.upper_limit}} - FL{{ ats_route.lower_limit}} / {{ ats_route.msa}}FT</td>
+        <td>Lateral Limit: {{ats_route.lateral_limit}}</td>
+    </tr>
+    {% for point in points %}
+    <tr>  
+        <th>Point: {{ point.name}}</th>
+        <td>Latitude: {{ point.latitude}}</td>
+        <td>Longitude: {{ point.longitude}}</td>
+        <td>
+          <a class="btn btn-sm btn-icon-only text-danger" href="{% url 'delete_waypoint' point.id %}" role="button"
+                        aria-expanded="false">
+            <i class="fas fa-minus"></i>
+          </a>   
+        </td>    
+    </tr>
+    {%endfor%}
+    <tr>  
+        <td>{{ form.name|as_crispy_field}}</td>
+        <td>{{ form.latitude|as_crispy_field}}</td>
+        <td>{{ form.longitude|as_crispy_field}}</td>
+        <td>
+          <a href="#" class="btn btn-outline-success">
+            <button type="submit" value="submit" class="btn btn-sm">
+                <i class="fa fa-plus"> </i>
+            </button>
+          </a>
+        </td>     
+        <input type="text" hidden value="{{ ats_route.id }}" name="atsroute"/>
+    </tr>
+    
+    </form>
+</table>
+
+<div class="map">
+   {{ map_obj|safe }} 
+</div>
+
+{% endblock %}

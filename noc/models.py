@@ -40,6 +40,13 @@ class AreaType(models.Model):
 
     def __str__(self):
         return self.name
+
+class RouteType(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=2000)
+
+    def __str__(self):
+        return self.name
     
 class Area(models.Model):
     name = models.CharField(max_length=200)
@@ -52,11 +59,33 @@ class Area(models.Model):
     def __str__(self):
         return self.name
 
+
+class AtsRoute(models.Model):
+    name = models.CharField(max_length=200)
+    upper_limit = models.IntegerField()
+    lower_limit = models.IntegerField()
+    lateral_limit = models.IntegerField()
+    mfa = models.IntegerField()
+    color = models.CharField(max_length=50, default='black')
+    description = models.CharField(max_length=2000, null=True)
+    route_type = models.ForeignKey(RouteType, on_delete=models.CASCADE)
+    reference = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+class Waypoint(models.Model):
+    name = models.CharField(max_length=50)
+    latitude = models.FloatField(default=0.0)
+    longitude = models.FloatField(default=0.0)    
+    atsroute = models.ForeignKey(AtsRoute, on_delete=models.CASCADE, null=True)
+
+
 class Point(models.Model):
     point_name = models.CharField(max_length=200)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
-    area = models.ForeignKey(Area, on_delete=models.CASCADE)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)    
 
     def __str__(self):
         return self.point_name

@@ -4,17 +4,20 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render,redirect
 import pandas as pd
 import folium
+
 import csv
 
 # Create your views here.
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
 from django.template import loader
 
-from noc.my_map import draw_area, show_map
+from noc.my_map import draw_area, draw_route, show_map
 
 from .angle import find_angle
 from .arrows import getArrows
-from .forms import AddNewAirport, MarkAreaForm, MarkObstruction, PointForm, AreaTypeForm
-from .models import Airport, Area, AreaType, Point
+from .forms import AddNewAirport, MarkAreaForm, MarkObstruction, PointForm, AreaTypeForm, RouteForm, RouteTypeForm, WayPointForm
+from .models import Airport, Area, AreaType, AtsRoute, Point, RouteType, Waypoint
 from .distance import find_distance
 
 
@@ -87,9 +90,9 @@ def airport_details(request, airport_id):
             airport = Airport.objects.get(pk=airport_id)
             airport_location = [airport.latitude_deg, airport.longitude_deg]
             map = folium.Map(location=airport_location, control_scale=True)
-            ihs = folium.vector_layers.Circle(location=airport_location, fill="red", radius=6100, color="red", opacity=0.4,
-                                              popup="IHS", tooltip="IHS")
-            ohs = folium.vector_layers.Circle(location=airport_location, fill="blue", radius=20000, color="blue",
+            ihs = folium.vector_layers.Circle(location=airport_location, fill="red", radius=20000, color="red", opacity=0.8,
+                                              popup="IHS", tooltip="20 KM RED ZONE")
+            ohs = folium.vector_layers.Circle(location=airport_location, fill="yellow", radius=60000, color="yellow",
                                               opacity=0.4)
             ihs.add_to(map)
             ohs.add_to(map)
@@ -143,11 +146,11 @@ def airport_details(request, airport_id):
                 print("Radial Distance between Airport and Obstruction is %d deg %f Km " % (angle, dis))
 
                 map = folium.Map(location=airport_location, control_scale=True)
-                ihs = folium.vector_layers.Circle(location=airport_location, fill="red", radius=6100, color="red",
-                                                  opacity=0.4,
-                                                  popup="IHS", tooltip="IHS")
-                ohs = folium.vector_layers.Circle(location=airport_location, fill="blue", radius=20000, color="blue",
-                                                  opacity=0.4)
+                ihs = folium.vector_layers.Circle(location=airport_location, fill="red", radius=20000, color="red",
+                                                  opacity=0.8,
+                                                  popup="20 Km radius", tooltip="20 Km radius")
+                ohs = folium.vector_layers.Circle(location=airport_location, fill="yellow", radius=60000, color="yellow",
+                                                  opacity=0.7, popup="60 Km radius", tooltip="60 Km radius")
 
                 folium.Marker(location=airport_location,
                               popup='ARP %s Elevation: %d Feet' % (airport_location, airport.elevation_ft),
@@ -190,8 +193,8 @@ def area_plot(request) :
 
             for airport in Airport.objects.all():
                 airport_location = [airport.latitude_deg, airport.longitude_deg]
-                ihs = folium.vector_layers.Circle(location=airport_location, fill="red", radius=5000, color="red", opacity=0.4,
-                                              popup="5KM Radius", tooltip="5KM Radius")
+                ihs = folium.vector_layers.Circle(location=airport_location, fill="red", radius=20000, color="red", opacity=0.4,
+                                              popup="5KM Radius", tooltip="20KM Radius")
                 ihs.add_to(map)
                 folium.Marker(location=airport_location,
                           popup='%s %s ARP %s ' % (airport.name, airport.ident, airport_location),
@@ -200,15 +203,15 @@ def area_plot(request) :
            
             # create a layer on the map object
             
-            shapesLayer = folium.FeatureGroup(name="Exercise Area").add_to(map)          
+            # shapesLayer = folium.FeatureGroup(name="Exercise Area").add_to(map)          
            
 
             # create a polygon with the coordinates
-            folium.Polygon([(12.37, 77.58), (11.48, 79.46), (11.09, 78.53),
-                 (11.27, 77.52)],
-                color="red",
-                fill_color="orange",
-                weight=2).add_to(shapesLayer)
+            # folium.Polygon([(12.37, 77.58), (11.48, 79.46), (11.09, 78.53),
+            #      (11.27, 77.52)],
+            #     color="red",
+            #     fill_color="orange",
+            #     weight=2).add_to(shapesLayer)
             folium.LayerControl().add_to(map)
             
             m = map._repr_html_()
@@ -237,10 +240,7 @@ def point_plot(request, id):
         location = []
         for p in points:
             coordinate = (p.latitude, p.longitude)
-            location.append(coordinate)
-
-            
-            
+            location.append(coordinate) 
        
         if len(location)!=0:
             map_location = location[0] # First Point
@@ -271,15 +271,9 @@ def point_plot(request, id):
         form = PointForm(request.POST)
         if form.is_valid:
            point =  form.save()  
-           area = Area.objects.get(pk=point.area.id)
-           points = Point.objects.filter(area=area.id)
-           form = PointForm()
-           context = {
-               'points': points,
-               'area':area,
-               'form':form
-           }
+           area = Area.objects.get(pk=point.area.id)           
            return redirect('point_plot', id=area.id)
+
     return render(request,'noc/point_plot.html', context)
 
 def mark_obstruction(request):
@@ -342,3 +336,120 @@ def area_type(request):
 
 
     return render(request, 'noc/area_type.html', context)
+
+def route_plot(request):
+    if request.method == "GET":
+        form = RouteForm()
+        
+        context = {
+            'form':form,           
+        }
+
+    else:
+        form = RouteForm(request.POST)
+        if form.is_valid:
+            atsroute = form.save()           
+        
+        return redirect('waypoint_plot', id=atsroute.id)      
+       
+
+    return render(request, "noc/route_plot.html",context)
+
+def waypoint_plot(request, id):
+    if request.method == "GET":
+        form = WayPointForm()
+        atsroute = AtsRoute.objects.get(pk = id)
+
+        points = Waypoint.objects.filter(atsroute=atsroute.id)
+        map_location = [11.00,77.00]
+        map_obj = folium.Map(location=map_location)
+        if len(points) !=0:           
+            map_location = [(points[0].latitude, points[0].longitude)]
+            for p in points:                
+                map_location.append((p.latitude, p.longitude))
+            
+            map_obj = draw_route(map_location, color=atsroute.color, route_name=atsroute.name) 
+
+            for p in points:
+                div = folium.DivIcon(html=(
+                        '<svg height="100" width="200">'                        
+                        '<text x="10" y="10" fill="black">%s</text>'
+                        '</svg>'% ([p.name,  p.latitude,    p.longitude])
+                        ))
+
+                folium.Marker([p.latitude, p.longitude],icon=div).add_to(map_obj)
+                arrows = getArrows(locations=map_location, n_arrows=5)
+                for arrow in arrows:
+                    arrow.add_to(map_obj)    
+        m = map_obj._repr_html_()  
+        context = {
+            'form': form,
+            'ats_route': atsroute,
+            'points':points,
+            'map_obj':m
+        }
+    else:
+        form = WayPointForm(request.POST)
+        if form.is_valid:
+           waypoint =  form.save()
+           atsroute = AtsRoute.objects.get(pk = waypoint.atsroute.id)
+           print(atsroute)
+        return redirect('waypoint_plot', id = atsroute.id)
+
+    return render(request, 'noc/waypoint_plot.html', context)
+
+
+def delete_waypoint(request, id):
+    waypoint = Waypoint.objects.get(pk=id)    
+    atsroute = AtsRoute.objects.get(pk = waypoint.atsroute.id)
+    waypoint.delete()
+    
+    return redirect('waypoint_plot', id=atsroute.id)
+
+
+def route_list(request):
+    ats_routes = AtsRoute.objects.all()
+    
+    for ats_route in ats_routes:        
+        points = Waypoint.objects.filter(ats_route = ats_route.id)
+
+    context = {
+        'ats_routes':ats_routes,
+        'points':points
+    }
+    render(request, 'noc/route_list.html', context)
+
+def route_delete(request, id):
+    ats_route = AtsRoute.objects.filter(pk=id)
+    ats_route.delete()
+    return redirect(request, 'route_list')
+
+def route_type(request):
+    if request.method == "GET":
+        routeTypes = RouteType.objects.all()
+        form = RouteTypeForm()
+
+        context:dict = {
+            'form':form,
+            'routeTypes':routeTypes
+        }
+    else:       
+        form = RouteTypeForm(request.POST)
+        if form.is_valid:
+            form.save()  
+        routeTypes = RouteType.objects.all()
+        form = RouteTypeForm()
+        context:dict = {
+            'form':form,
+            'routeTypes':routeTypes
+        }
+
+
+    return render(request, 'noc/route_type.html', context)
+
+
+def delete_route_type(request, id):
+    routeType = RouteType.objects.get(pk=id)    
+    routeType.delete()
+    return redirect(request, 'route_type')
+
