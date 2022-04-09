@@ -18,7 +18,6 @@ certifi==2020.6.20
 cffi==1.15.0
 chardet==4.0.0
 charset-normalizer==2.0.12
-chrome-gnome-shell==0.0.0
 cliapp==1.20180812.1
 click==7.1.2
 cmdtest==0.32+git
