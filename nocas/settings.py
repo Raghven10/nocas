@@ -28,7 +28,7 @@ SECRET_KEY = 'zwo=^!_hb24)e+j#ah1gs4_+0u+t7qg)bi_%9e+f_&&&vu@8oz'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['nocas.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['radiant-dusk-66458.herokuapp.com','nocas.herokuapp.com','127.0.0.1']
 
 
 # Application definition
